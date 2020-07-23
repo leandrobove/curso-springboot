@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.meudominio.course.entities.User;
 import br.com.meudominio.course.repositories.UserRepository;
+import br.com.meudominio.course.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
@@ -22,7 +23,7 @@ public class UserService {
 	public User findById(Long id) {
 		Optional<User> findById = repository.findById(id);
 
-		return findById.get();
+		return findById.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User objUser) {
@@ -32,12 +33,12 @@ public class UserService {
 	public void delete(Long id) {
 		repository.deleteById(id);
 	}
-	
+
 	public User update(Long id, User newUser) {
 		User entity = repository.getOne(id);
-		
+
 		updateData(entity, newUser);
-		
+
 		return repository.save(entity);
 	}
 
